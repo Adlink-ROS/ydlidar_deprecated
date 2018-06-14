@@ -15,7 +15,7 @@ OR (build only)
 $ ament build --only-packages ydlidar  
 
 For isolated build  
-$ ament build --isolated --build-tests --symlink-install --only ydlidar  
+$ ament build --isolated --symlink-install --only ydlidar  
 
 ## Execute
 $ ros2 run ydlidar ydlidar_node  
