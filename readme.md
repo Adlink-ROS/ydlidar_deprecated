@@ -1,5 +1,5 @@
 # YDLidar ROS 2.0 Wrapper   
-This is ROS version pkg based on original EAI-ydlidar ros wrapper repo.  
+This is ROS2.0 version pkg based on original EAI-ydlidar ros wrapper repo.  
 
 ## Developers  
 * Alan, Chen (alan.chen@adlinktech.com)  
