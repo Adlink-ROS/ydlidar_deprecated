@@ -9,6 +9,11 @@ This is ROS2.0 version pkg based on original EAI-ydlidar ros wrapper repo.
 ## License  
 Apache 2.0 (Copyright 2018 ADLINK Technology, Inc.)  
   
+## Install udev  
+* $ cd AMENT_WS/src/ydlidar_ros2  
+* $ sudo chmod 777 ./*  
+* $ sudo sh initenv.sh  
+
 ## Compile      
 $ cd ~/ros2_ws  
 $ ament build  
