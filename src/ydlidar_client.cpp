@@ -50,7 +50,7 @@ int main(int argc, char **argv)
 {
     rclcpp::init(argc, argv);
     g_node = rclcpp::Node::make_shared("ydlidar_client");
-    auto sub = g_node->create_subscription<sensor_msgs::msg::LaserScan>("/scan", 1000, scanCallback);
+    auto sub = g_node->create_subscription<sensor_msgs::msg::LaserScan>("/scan", scanCallback, 1000);
     rclcpp::spin(g_node);
     rclcpp::shutdown();
 
