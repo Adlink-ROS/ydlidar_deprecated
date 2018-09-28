@@ -25,7 +25,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/laser_scan.hpp"
 
-#define RAD2DEG(x) ((x)*180./M_PI)
+#define RAD2DEG(x) ((x)*180. / M_PI)
 
 rclcpp::Node::SharedPtr g_node = nullptr;
 
@@ -35,11 +35,11 @@ void scanCallback(const sensor_msgs::msg::LaserScan::SharedPtr scan)
 
     printf("[YDLIDAR INFO]: I heard a laser scan %s[%d]:\n", scan->header.frame_id.c_str(), count);
     printf("[YDLIDAR INFO]: angle_range : [%f, %f]\n", RAD2DEG(scan->angle_min), RAD2DEG(scan->angle_max));
-  
-    for(int i = 0; i < count; i++) 
+
+    for (int i = 0; i < count; i++)
     {
         float degree = RAD2DEG(scan->angle_min + scan->angle_increment * i);
-	    if(degree > -5 && degree< 5)
+        if (degree > -5 && degree < 5)
         {
             printf("[YDLIDAR INFO]: angle-distance : [%f, %f, %i]\n", degree, scan->ranges[i], i);
         }

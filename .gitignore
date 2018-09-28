@@ -1,0 +1,16 @@
+# sys junks
+.DS_Store
+Thumbs.db
+
+# node modules
+node_modules/
+*.log
+
+# test reports
+reports/
+build/
+install/
+log/
+
+.vscode/
+.idea/
