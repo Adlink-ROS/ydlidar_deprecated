@@ -54,9 +54,9 @@ static double each_angle = 0.5;
 int type = 0;
 int print = 0;
 
-void publish_scan(rclcpp::Publisher<sensor_msgs::msg::LaserScan>::SharedPtr pub, node_info* nodes, size_t node_count, rclcpp::Time start,
-    double scan_time, double angle_min, double angle_max, std::string frame_id,
-    std::vector<double> ignore_array, double min_range, double max_range)
+void publish_scan(rclcpp::Publisher<sensor_msgs::msg::LaserScan>::SharedPtr pub, node_info *nodes, size_t node_count, rclcpp::Time start,
+                  double scan_time, double angle_min, double angle_max, std::string frame_id,
+                  std::vector<double> ignore_array, double min_range, double max_range)
 {
     sensor_msgs::msg::LaserScan scan_msg;
 
@@ -125,8 +125,7 @@ void publish_scan(rclcpp::Publisher<sensor_msgs::msg::LaserScan>::SharedPtr pub,
     pub->publish(scan_msg);
 }
 
-
-std::vector<double> split(const std::string& s, char delim)
+std::vector<double> split(const std::string &s, char delim)
 {
     std::vector<double> elems;
     std::stringstream ss(s);
@@ -138,8 +137,7 @@ std::vector<double> split(const std::string& s, char delim)
     return elems;
 }
 
-
-bool getDeviceInfo(std::string port, int& samp_rate, double _frequency, int baudrate)
+bool getDeviceInfo(std::string port, int &samp_rate, double _frequency, int baudrate)
 {
     if (!YDlidarDriver::singleton())
     {
@@ -162,154 +160,154 @@ bool getDeviceInfo(std::string port, int& samp_rate, double _frequency, int baud
     type = devinfo.model;
     switch (devinfo.model)
     {
-        case 1:
-            model = "F4";
-            _samp_rate = 4;
-            freq = 7.0;
-            break;
+    case 1:
+        model = "F4";
+        _samp_rate = 4;
+        freq = 7.0;
+        break;
+    case 4:
+        model = "S4";
+        if (baudrate == 153600)
+        {
+            model = "S4Pro";
+        }
+        _samp_rate = 4;
+        freq = 7.0;
+        break;
+    case 5:
+        model = "G4";
+        YDlidarDriver::singleton()->getSamplingRate(_rate);
+        switch (samp_rate)
+        {
         case 4:
-            model = "S4";
-            if (baudrate == 153600)
-            {
-                model = "S4Pro";
-            }
-            _samp_rate = 4;
-            freq = 7.0;
-            break;
-        case 5:
-            model = "G4";
-            YDlidarDriver::singleton()->getSamplingRate(_rate);
-            switch (samp_rate)
-            {
-                case 4:
-                    _samp_rate = 0;
-                    break;
-                case 8:
-                    _samp_rate = 1;
-                    break;
-                case 9:
-                    _samp_rate = 2;
-                    break;
-                default:
-                    _samp_rate = _rate.rate;
-                    break;
-            }
-            while (_samp_rate != _rate.rate)
-            {
-                YDlidarDriver::singleton()->setSamplingRate(_rate);
-            }
-            switch (_rate.rate)
-            {
-                case 0:
-                    _samp_rate = 4;
-                    break;
-                case 1:
-                    nodes_count = 1440;
-                    each_angle = 0.25;
-                    _samp_rate = 8;
-                    break;
-                case 2:
-                    nodes_count = 1440;
-                    each_angle = 0.25;
-                    _samp_rate = 9;
-                    break;
-            }
-
-            if (YDlidarDriver::singleton()->getScanFrequency(_scan_frequency) != RESULT_OK)
-            {
-                ROS_ERROR("YDLIDAR get frequency Error\n");
-                return false;
-            }
-            freq = _scan_frequency.frequency / 100;
-            hz = _frequency - freq;
-            if (hz > 0)
-            {
-                while (hz != 0)
-                {
-                    YDlidarDriver::singleton()->setScanFrequencyAdd(_scan_frequency);
-                    hz--;
-                }
-                freq = _scan_frequency.frequency / 100.0;
-            }
-            else
-            {
-                while (hz != 0)
-                {
-                    YDlidarDriver::singleton()->setScanFrequencyDis(_scan_frequency);
-                    hz++;
-                }
-                freq = _scan_frequency.frequency / 100.0;
-            }
-            break;
-        case 6:
-            model = "X4";
-            _samp_rate = 5;
-            freq = 7.0;
+            _samp_rate = 0;
             break;
         case 8:
-            model = "F4Pro";
-            YDlidarDriver::singleton()->getSamplingRate(_rate);
-            switch (samp_rate)
-            {
-                case 4:
-                    _samp_rate = 0;
-                    break;
-                case 6:
-                    _samp_rate = 1;
-                    break;
-                default:
-                    _samp_rate = _rate.rate;
-                    break;
-            }
-            while (_samp_rate != _rate.rate)
-            {
-                YDlidarDriver::singleton()->setSamplingRate(_rate);
-            }
-            switch (_rate.rate)
-            {
-                case 0:
-                    _samp_rate = 4;
-                    break;
-                case 1:
-                    nodes_count = 1440;
-                    each_angle = 0.25;
-                    _samp_rate = 6;
-                    break;
-            }
-
-            if (YDlidarDriver::singleton()->getScanFrequency(_scan_frequency) != RESULT_OK)
-            {
-                ROS_ERROR("YDLIDAR get frequency Error\n");
-                return false;
-            }
-            freq = _scan_frequency.frequency / 100;
-            hz = _frequency - freq;
-            if (hz > 0)
-            {
-                while (hz != 0)
-                {
-                    YDlidarDriver::singleton()->setScanFrequencyAdd(_scan_frequency);
-                    hz--;
-                }
-                freq = _scan_frequency.frequency / 100.0;
-            }
-            else
-            {
-                while (hz != 0)
-                {
-                    YDlidarDriver::singleton()->setScanFrequencyDis(_scan_frequency);
-                    hz++;
-                }
-                freq = _scan_frequency.frequency / 100.0;
-            }
+            _samp_rate = 1;
             break;
         case 9:
-            model = "G4C";
-            _samp_rate = 4;
-            freq = 7.0;
+            _samp_rate = 2;
             break;
         default:
-            model = "Unknown";
+            _samp_rate = _rate.rate;
+            break;
+        }
+        while (_samp_rate != _rate.rate)
+        {
+            YDlidarDriver::singleton()->setSamplingRate(_rate);
+        }
+        switch (_rate.rate)
+        {
+        case 0:
+            _samp_rate = 4;
+            break;
+        case 1:
+            nodes_count = 1440;
+            each_angle = 0.25;
+            _samp_rate = 8;
+            break;
+        case 2:
+            nodes_count = 1440;
+            each_angle = 0.25;
+            _samp_rate = 9;
+            break;
+        }
+
+        if (YDlidarDriver::singleton()->getScanFrequency(_scan_frequency) != RESULT_OK)
+        {
+            ROS_ERROR("YDLIDAR get frequency Error\n");
+            return false;
+        }
+        freq = _scan_frequency.frequency / 100;
+        hz = _frequency - freq;
+        if (hz > 0)
+        {
+            while (hz != 0)
+            {
+                YDlidarDriver::singleton()->setScanFrequencyAdd(_scan_frequency);
+                hz--;
+            }
+            freq = _scan_frequency.frequency / 100.0;
+        }
+        else
+        {
+            while (hz != 0)
+            {
+                YDlidarDriver::singleton()->setScanFrequencyDis(_scan_frequency);
+                hz++;
+            }
+            freq = _scan_frequency.frequency / 100.0;
+        }
+        break;
+    case 6:
+        model = "X4";
+        _samp_rate = 5;
+        freq = 7.0;
+        break;
+    case 8:
+        model = "F4Pro";
+        YDlidarDriver::singleton()->getSamplingRate(_rate);
+        switch (samp_rate)
+        {
+        case 4:
+            _samp_rate = 0;
+            break;
+        case 6:
+            _samp_rate = 1;
+            break;
+        default:
+            _samp_rate = _rate.rate;
+            break;
+        }
+        while (_samp_rate != _rate.rate)
+        {
+            YDlidarDriver::singleton()->setSamplingRate(_rate);
+        }
+        switch (_rate.rate)
+        {
+        case 0:
+            _samp_rate = 4;
+            break;
+        case 1:
+            nodes_count = 1440;
+            each_angle = 0.25;
+            _samp_rate = 6;
+            break;
+        }
+
+        if (YDlidarDriver::singleton()->getScanFrequency(_scan_frequency) != RESULT_OK)
+        {
+            ROS_ERROR("YDLIDAR get frequency Error\n");
+            return false;
+        }
+        freq = _scan_frequency.frequency / 100;
+        hz = _frequency - freq;
+        if (hz > 0)
+        {
+            while (hz != 0)
+            {
+                YDlidarDriver::singleton()->setScanFrequencyAdd(_scan_frequency);
+                hz--;
+            }
+            freq = _scan_frequency.frequency / 100.0;
+        }
+        else
+        {
+            while (hz != 0)
+            {
+                YDlidarDriver::singleton()->setScanFrequencyDis(_scan_frequency);
+                hz++;
+            }
+            freq = _scan_frequency.frequency / 100.0;
+        }
+        break;
+    case 9:
+        model = "G4C";
+        _samp_rate = 4;
+        freq = 7.0;
+        break;
+    default:
+        model = "Unknown";
     }
 
     samp_rate = _samp_rate;
@@ -322,7 +320,7 @@ bool getDeviceInfo(std::string port, int& samp_rate, double _frequency, int baud
            "Hardware version: %u\n"
            "Model: %s\n"
            "Serial: ",
-        port.c_str(), maxv, midv, minv, (uint16_t)devinfo.hardware_version, model.c_str());
+           port.c_str(), maxv, midv, minv, (uint16_t)devinfo.hardware_version, model.c_str());
 
     for (int i = 0; i < 16; i++)
     {
@@ -335,7 +333,6 @@ bool getDeviceInfo(std::string port, int& samp_rate, double _frequency, int baud
 
     return true;
 }
-
 
 bool getDeviceHealth()
 {
@@ -351,7 +348,7 @@ bool getDeviceHealth()
     if (op_result == RESULT_OK)
     {
         printf("[YDLIDAR INFO] YDLIDAR running correctly! The health status: %s\n",
-            healthinfo.status == 0 ? "well" : "bad");
+               healthinfo.status == 0 ? "well" : "bad");
 
         if (healthinfo.status == 2)
         {
@@ -373,11 +370,10 @@ bool getDeviceHealth()
     }
 }
 
-
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
     rclcpp::init(argc, argv);
-    auto node = rclcpp::Node::make_shared("ydlidar_node");    
+    auto node = rclcpp::Node::make_shared("ydlidar_node");
 
     std::string port;
     int baudrate = 115200;
@@ -401,7 +397,7 @@ int main(int argc, char* argv[])
     node->get_parameter_or("baudrate", baudrate, 115200);
     node->get_parameter_or("angle_max", angle_max, 180.0);
     node->get_parameter_or("angle_min", angle_min, -180.0); // degree
-    node->get_parameter_or("samp_rate", samp_rate, 4); 
+    node->get_parameter_or("samp_rate", samp_rate, 9);
     node->get_parameter_or("range_max", max_range, 16.0); // m
     node->get_parameter_or("range_min", min_range, 0.08); // m
     node->get_parameter_or("frequency", _frequency, 7.0); // Hz
@@ -454,8 +450,7 @@ int main(int argc, char* argv[])
     checkmodel.insert(std::map<int, bool>::value_type(230400, false));
     printf("[YDLIDAR INFO] Current ROS 2.0 Driver Version: %s\n", ((std::string)ROS2Verision).c_str());
     printf("[YDLIDAR INFO] Current SDK Version: %s\n",
-        YDlidarDriver::singleton()->getSDKVersion().c_str());
-
+           YDlidarDriver::singleton()->getSDKVersion().c_str());
 
 again:
     op_result = YDlidarDriver::singleton()->connect(port.c_str(), (uint32_t)baudrate);
@@ -465,12 +460,12 @@ again:
         while (seconds <= DELAY_SECONDS && flag)
         {
             //sleep(2);
-            rclcpp::sleep_for(std::chrono::milliseconds(2000) );
+            rclcpp::sleep_for(std::chrono::milliseconds(2000));
             seconds = seconds + 2;
             YDlidarDriver::singleton()->disconnect();
             op_result = YDlidarDriver::singleton()->connect(port.c_str(), (uint32_t)baudrate);
             printf("[YDLIDAR INFO] Try to connect the port %s again  after %d s .\n", port.c_str(),
-                seconds);
+                   seconds);
             if (op_result == RESULT_OK)
             {
                 break;
@@ -528,7 +523,6 @@ again:
             intensities_ = false;
         }
     }
-
 
     YDlidarDriver::singleton()->setIntensities(intensities_);
     if (intensities_)
@@ -609,7 +603,6 @@ again:
     double scan_duration;
     rclcpp::Rate rate(30);
 
-
     int max_nodes_count = nodes_count;
     each_angle = 360.0 / (double)(nodes_count);
 
@@ -652,9 +645,7 @@ again:
                         {
                             if (nodes[i].distance_q2 != 0)
                             {
-                                double angle = (double)((nodes[i].angle_q6_checkbit
-                                                          >> LIDAR_RESP_MEASUREMENT_ANGLE_SHIFT)
-                                    / 64.0);
+                                double angle = (double)((nodes[i].angle_q6_checkbit >> LIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) / 64.0);
                                 if (reversion)
                                 {
                                     angle = angle + 180;
@@ -663,7 +654,7 @@ again:
                                         angle = angle - 360;
                                     }
                                     nodes[i].angle_q6_checkbit = ((uint16_t)(angle * 64.0))
-                                        << LIDAR_RESP_MEASUREMENT_ANGLE_SHIFT;
+                                                                 << LIDAR_RESP_MEASUREMENT_ANGLE_SHIFT;
                                 }
                                 int inter = (int)(angle / each_angle);
                                 double angle_pre = angle - inter * each_angle;
@@ -694,11 +685,11 @@ again:
                             }
                         }
 
-                        scan_duration = (end_scan_time - start_scan_time).nanoseconds()/10e9;
+                        scan_duration = (end_scan_time - start_scan_time).nanoseconds() / 10e9;
 
                         publish_scan(scan_pub, all_nodes, max_nodes_count, start_scan_time,
-                            scan_duration, angle_min, angle_max, frame_id, ignore_array, min_range,
-                            max_range);
+                                     scan_duration, angle_min, angle_max, frame_id, ignore_array, min_range,
+                                     max_range);
                     }
                     else
                     {
@@ -712,29 +703,25 @@ again:
                             ;
                         end_node = i + 1;
 
-                        angle_min = (double)(nodes[start_node].angle_q6_checkbit
-                                        >> LIDAR_RESP_MEASUREMENT_ANGLE_SHIFT)
-                            / 64.0;
-                        angle_max = (double)(nodes[end_node].angle_q6_checkbit
-                                        >> LIDAR_RESP_MEASUREMENT_ANGLE_SHIFT)
-                            / 64.0;
+                        angle_min = (double)(nodes[start_node].angle_q6_checkbit >> LIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) / 64.0;
+                        angle_max = (double)(nodes[end_node].angle_q6_checkbit >> LIDAR_RESP_MEASUREMENT_ANGLE_SHIFT) / 64.0;
 
                         publish_scan(scan_pub, &nodes[start_node], end_node - start_node + 1,
-                            start_scan_time, scan_duration, angle_min, angle_max, frame_id,
-                            ignore_array, min_range, max_range);
+                                     start_scan_time, scan_duration, angle_min, angle_max, frame_id,
+                                     ignore_array, min_range, max_range);
                     }
                 }
             }
-            rclcpp::spin_some(node);            
+            rclcpp::spin_some(node);
             rate.sleep();
-            
         }
-        catch (std::exception& e)
+        catch (std::exception &e)
         { //
             std::cout << "Unhandled Exception: " << e.what() << std::endl;
             break;
         }
-        catch (...){//anthor exception
+        catch (...)
+        { //anthor exception
             ROS_ERROR("Unhandled Exception:Unknown ");
             break;
         }
