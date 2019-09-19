@@ -1,5 +1,5 @@
-# YDLidar ROS 2.0 Wrapper   
-This is ROS2.0 version pkg based on original EAI-ydlidar ros wrapper repo.  
+# YDLidar ROS 2 Wrapper   
+This is ROS2 version pkg based on original EAI-ydlidar ros wrapper repo.  
 (original repo: https://github.com/EAIBOT/ydlidar)  
 
 ## Developers  
@@ -7,7 +7,7 @@ This is ROS2.0 version pkg based on original EAI-ydlidar ros wrapper repo.
 * HaoChih, LIN (haochih.lin@adlinktech.com)  
 
 ## License  
-Apache 2.0 (Copyright 2018 ADLINK Technology, Inc.)  
+Apache 2.0 (Copyright 2019 ADLINK Technology, Inc.)  
   
 ## Install udev  
 * $ cd AMENT_WS/src/ydlidar_ros2  
