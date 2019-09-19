@@ -15,11 +15,9 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 
-#add_subdirectory(sdk)
+set(SDK_PATH "${PROJECT_SOURCE_DIR}/sdk/")
 
-set(SDK_PATH "./sdk/")
-
-FILE(GLOB SDK_SRC 
+FILE(GLOB SDK_SRC
   "${SDK_PATH}/src/impl/unix/*.cpp"
   "${SDK_PATH}/src/*.cpp"
 )
